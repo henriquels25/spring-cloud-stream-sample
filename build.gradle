@@ -3,6 +3,7 @@ plugins {
     id 'io.spring.dependency-management' version '1.0.10.RELEASE'
     id 'java'
     id "org.sonarqube" version "3.0"
+    id 'jacoco'
 }
 
 group = 'io.henriquels25.cloudstream.demo'
@@ -55,6 +56,12 @@ dependencyManagement {
 
 test {
     useJUnitPlatform()
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+    }
 }
 
 sonarqube {
