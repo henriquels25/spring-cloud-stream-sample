@@ -69,5 +69,6 @@ sonarqube {
         property "sonar.projectKey", "henriquels25_spring-cloud-stream-sample"
         property "sonar.organization", "henriquels"
         property "sonar.host.url", "https://sonarcloud.io"
+        property "sonar.exclusions", "**/FlightApiApplication.java"
     }
 }

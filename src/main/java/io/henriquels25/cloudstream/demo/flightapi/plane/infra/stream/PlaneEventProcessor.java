@@ -17,7 +17,7 @@ class PlaneEventProcessor implements Function<PlaneEvent, FlightEvent> {
     public FlightEvent apply(PlaneEvent planeEvent) {
         String planeId = planeEvent.getPlaneId();
         Flight flight = flightOperations.findConfirmedFlightByPlaneId(planeId)
-                .orElseThrow(() -> new NoFlightFoundException(String.format("No flight found for plane id %s".format(planeId))));
+                .orElseThrow(() -> new NoFlightFoundException(String.format("No flight found for plane id %s", planeId)));
         return new FlightEvent(flight.getId(), planeEvent.getCurrentAirport());
     }
 }
