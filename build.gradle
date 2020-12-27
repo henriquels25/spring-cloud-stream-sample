@@ -2,6 +2,7 @@ plugins {
     id 'org.springframework.boot' version '2.4.1'
     id 'io.spring.dependency-management' version '1.0.10.RELEASE'
     id 'java'
+    id "org.sonarqube" version "3.0"
 }
 
 group = 'io.henriquels25.cloudstream.demo'
@@ -54,4 +55,12 @@ dependencyManagement {
 
 test {
     useJUnitPlatform()
+}
+
+sonarqube {
+    properties {
+        property "sonar.projectKey", "henriquels25_spring-cloud-stream-sample"
+        property "sonar.organization", "henriquels"
+        property "sonar.host.url", "https://sonarcloud.io"
+    }
 }
