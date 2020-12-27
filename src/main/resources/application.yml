@@ -1,0 +1,16 @@
+spring:
+  cloud.stream:
+    kafka.bindings:
+      planeEventProcessor-in-0:
+        consumer:
+          enableDlq: true
+          dlqName: plane-events-dlq-v1
+    bindings:
+      planeEventProcessor-in-0:
+        destination: plane-events-v1
+        group: flight-api
+        consumer:
+          retryable-exceptions:
+            io.henriquels25.cloudstream.demo.flightapi.plane.infra.stream.NoFlightFoundException: false
+      planeEventProcessor-out-0:
+        destination: flight-events-v1
