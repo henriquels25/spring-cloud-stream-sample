@@ -34,6 +34,7 @@ class PlaneEventProcessorTest {
 
     @BeforeEach
     void prepare() {
+        // TODO see if I can remove it
         Mockito.reset(flightOperations);
     }
 

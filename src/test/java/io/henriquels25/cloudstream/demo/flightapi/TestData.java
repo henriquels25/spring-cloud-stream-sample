@@ -9,14 +9,14 @@ public class TestData {
     public static final String CODE = "PR-MYK";
     public static final String TYPE = "Airbus A320";
     public static final String PLANE_ID = "idPlane";
-    public static final String FLIGHT_ID = "flighId1";
+    public static final String FLIGHT_ID = "flightId1";
 
 
     public static final Plane PLANE = Plane.builder().code(CODE).type(TYPE).build();
     public static final Plane PLANE_WITH_ID = Plane.builder().id(PLANE_ID).code(CODE).type(TYPE).build();
 
     public static final String POA_CODE = "POA";
-    public static final String CNH_CODE = "POA";
+    public static final String CNH_CODE = "CNH";
     public static final Airport POA = new Airport(POA_CODE);
     public static final Airport CNH = new Airport(CNH_CODE);
 

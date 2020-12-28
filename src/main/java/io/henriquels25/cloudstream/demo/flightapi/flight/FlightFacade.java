@@ -1,5 +1,6 @@
 package io.henriquels25.cloudstream.demo.flightapi.flight;
 
+import io.henriquels25.cloudstream.demo.flightapi.airport.Airport;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -27,5 +28,10 @@ class FlightFacade implements FlightOperations {
             throw new IllegalStateException("There should only be one confirmed flight for a plane");
         }
         return Optional.of(flights.get(0));
+    }
+
+    @Override
+    public void flightArrivedIn(String flightId, Airport airport) {
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 }
