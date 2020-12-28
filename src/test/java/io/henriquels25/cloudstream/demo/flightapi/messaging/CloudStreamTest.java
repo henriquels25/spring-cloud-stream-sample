@@ -5,8 +5,6 @@ import org.springframework.cloud.function.context.config.ContextFunctionCatalogA
 import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration;
 import org.springframework.cloud.stream.config.*;
 import org.springframework.cloud.stream.function.FunctionConfiguration;
-import org.springframework.context.annotation.Import;
-import org.springframework.core.annotation.AliasFor;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -24,8 +22,5 @@ import java.lang.annotation.Target;
         FunctionConfiguration.class,
         BindingServiceConfiguration.class,
         TestChannelBinderConfiguration.class})
-@Import({})
 public @interface CloudStreamTest {
-    @AliasFor(annotation = Import.class)
-    Class<?>[] value() default {};
 }

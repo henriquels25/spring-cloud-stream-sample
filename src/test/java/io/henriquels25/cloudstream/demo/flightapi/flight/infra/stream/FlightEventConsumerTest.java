@@ -10,13 +10,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.stream.binder.test.InputDestination;
 import org.springframework.cloud.stream.binder.test.OutputDestination;
+import org.springframework.context.annotation.Import;
 import org.springframework.messaging.support.GenericMessage;
 
 import static io.henriquels25.cloudstream.demo.flightapi.TestData.CNH_CODE;
 import static io.henriquels25.cloudstream.demo.flightapi.TestData.FLIGHT_ID;
 import static org.mockito.Mockito.verify;
 
-@CloudStreamTest(FlightEventConsumer.class)
+@CloudStreamTest
+@Import(FlightEventConsumer.class)
 class FlightEventConsumerTest {
 
     @Autowired
