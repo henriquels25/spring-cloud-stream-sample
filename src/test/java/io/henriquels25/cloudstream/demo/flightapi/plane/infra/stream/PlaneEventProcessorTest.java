@@ -4,13 +4,13 @@ import io.henriquels25.cloudstream.demo.flightapi.flight.FlightOperations;
 import io.henriquels25.cloudstream.demo.flightapi.messaging.CloudStreamTest;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.stream.binder.test.InputDestination;
 import org.springframework.cloud.stream.binder.test.OutputDestination;
+import org.springframework.context.annotation.Import;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.GenericMessage;
 
@@ -21,7 +21,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@CloudStreamTest(PlaneEventProcessor.class)
+@CloudStreamTest
+@Import(PlaneEventProcessor.class)
 class PlaneEventProcessorTest {
 
     @Autowired
@@ -31,11 +32,6 @@ class PlaneEventProcessorTest {
 
     @MockBean
     private FlightOperations flightOperations;
-
-    @BeforeEach
-    void prepare() {
-        Mockito.reset(flightOperations);
-    }
 
     @Test
     void shouldTransformPlaneEventToFlightEvent() throws JSONException {

@@ -1,5 +1,6 @@
-package io.henriquels25.cloudstream.demo.flightapi.plane.infra.stream;
+package io.henriquels25.cloudstream.demo.flightapi.flight.infra.stream;
 
+import io.henriquels25.cloudstream.demo.flightapi.airport.Airport;
 import io.henriquels25.cloudstream.demo.flightapi.flight.FlightOperations;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -14,20 +15,20 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.kafka.test.EmbeddedKafkaBroker;
 import org.springframework.kafka.test.context.EmbeddedKafka;
 
-import java.util.Optional;
-
-import static io.henriquels25.cloudstream.demo.flightapi.TestData.*;
+import static io.henriquels25.cloudstream.demo.flightapi.TestData.CNH_CODE;
+import static io.henriquels25.cloudstream.demo.flightapi.TestData.FLIGHT_ID;
 import static io.henriquels25.cloudstream.demo.flightapi.messaging.utils.KafkaConsumerUtils.createConsumer;
 import static io.henriquels25.cloudstream.demo.flightapi.messaging.utils.KafkaConsumerUtils.getNextRecord;
 import static io.henriquels25.cloudstream.demo.flightapi.messaging.utils.KafkaProducerUtils.createProducer;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
+import static org.awaitility.Awaitility.await;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 @EmbeddedKafka(topics = {"plane-events-v1",
         "flight-events-v1", "plane-events-dlq-v1", "flight-events-dlq-v1"},
         bootstrapServersProperty = "spring.cloud.stream.kafka.binder.brokers")
-class PlaneEventKafkaTest {
+class FlightEventKafkaTest {
 
     @Autowired
     private EmbeddedKafkaBroker broker;
@@ -36,50 +37,44 @@ class PlaneEventKafkaTest {
     private FlightOperations flightOperations;
 
     @Test
-    void shouldTransformPlaneEventToFlightEvent() throws JSONException {
-        when(flightOperations.findConfirmedFlightByPlaneId(PLANE_ID)).
-                thenReturn(Optional.of(FLIGHT_WITH_ID));
-
-        Consumer<String, String> consumer = createConsumer(broker, "flight-events-v1");
-
-        String planeEvent = new JSONObject().put("planeId", PLANE_ID)
+    void shouldCallFlightOperationsWhenMessageIsReceived() throws JSONException, InterruptedException {
+        String flightEvent = new JSONObject().put("flightId", FLIGHT_ID)
                 .put("currentAirport", CNH_CODE).toString();
 
-        sendMessage("plane-events-v1", planeEvent);
+        sendMessage("flight-events-v1", flightEvent);
 
-        ConsumerRecord<String, String> record = getNextRecord(consumer, "flight-events-v1");
+        await().untilAsserted(() -> verify(flightOperations).
+                flightArrivedIn(FLIGHT_ID, new Airport(CNH_CODE)));
+    }
+
+
+    @Test
+    void shouldSendToDeadLetterWhenAnExceptionHappens() throws JSONException, InterruptedException {
+        doThrow(RuntimeException.class)
+                .when(flightOperations).flightArrivedIn(FLIGHT_ID, new Airport(CNH_CODE));
+
+        Consumer<String, String> consumer = createConsumer(broker, "flight-events-dlq-v1");
+
+        String flightEvent = new JSONObject().put("flightId", FLIGHT_ID)
+                .put("currentAirport", CNH_CODE).toString();
+
+        sendMessage("flight-events-v1", flightEvent);
+
+        ConsumerRecord<String, String> record = getNextRecord(consumer, "flight-events-dlq-v1");
 
         var jsonFlightEvent = new JSONObject(record.value());
         assertThat(jsonFlightEvent.get("currentAirport")).isEqualTo(CNH_CODE);
         assertThat(jsonFlightEvent.get("flightId")).isEqualTo(FLIGHT_ID);
-    }
-
-    @Test
-    void shouldSendToDeadLetterWhenThereIsNoFlight() throws JSONException {
-        when(flightOperations.findConfirmedFlightByPlaneId(PLANE_ID)).
-                thenReturn(Optional.empty());
-
-        Consumer<String, String> consumer = createConsumer(broker, "plane-events-dlq-v1");
-
-        String planeEvent = new JSONObject().put("planeId", PLANE_ID)
-                .put("currentAirport", CNH_CODE).toString();
-
-        sendMessage("plane-events-v1", planeEvent);
-
-        ConsumerRecord<String, String> record = getNextRecord(consumer, "plane-events-dlq-v1");
-
-        var jsonFlightEvent = new JSONObject(record.value());
-        assertThat(jsonFlightEvent.get("currentAirport")).isEqualTo(CNH_CODE);
-        assertThat(jsonFlightEvent.get("planeId")).isEqualTo(PLANE_ID);
         String exceptionMessage = new String(record.headers().lastHeader("x-exception-message").value());
-        assertThat(exceptionMessage).contains("NoFlightFoundException");
-    }
+        assertThat(exceptionMessage).contains("RuntimeException");
 
+        verify(flightOperations, times(3)).flightArrivedIn(FLIGHT_ID,
+                new Airport(CNH_CODE));
+    }
 
     private void sendMessage(String topic, String json) {
         Producer<String, String> producer = createProducer(broker);
 
         producer.send(new ProducerRecord<>(topic, json));
     }
-
 }

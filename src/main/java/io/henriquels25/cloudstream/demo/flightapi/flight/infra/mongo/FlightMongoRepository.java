@@ -22,6 +22,6 @@ class FlightMongoRepository implements FlightRepository {
 
     @Override
     public List<Flight> findConfirmedFlightsByPlaneId(String planeId) {
-        return null;
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 }
