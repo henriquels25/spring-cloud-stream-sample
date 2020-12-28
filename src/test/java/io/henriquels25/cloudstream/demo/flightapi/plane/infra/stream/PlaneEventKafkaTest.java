@@ -25,7 +25,7 @@ import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @EmbeddedKafka(topics = {"plane-events-v1",
-        "flight-events-v1", "plane-events-dlq-v1", "flight-events-v2"},
+        "flight-events-v1", "plane-events-dlq-v1", "flight-events-dlq-v1"},
         bootstrapServersProperty = "spring.cloud.stream.kafka.binder.brokers")
 class PlaneEventKafkaTest {
 

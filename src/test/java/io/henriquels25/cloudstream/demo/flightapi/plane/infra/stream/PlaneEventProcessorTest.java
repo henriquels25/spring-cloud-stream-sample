@@ -4,7 +4,6 @@ import io.henriquels25.cloudstream.demo.flightapi.flight.FlightOperations;
 import io.henriquels25.cloudstream.demo.flightapi.messaging.CloudStreamTest;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,12 +32,6 @@ class PlaneEventProcessorTest {
 
     @MockBean
     private FlightOperations flightOperations;
-
-    @BeforeEach
-    void prepare() {
-        // TODO see if I can remove it
-        Mockito.reset(flightOperations);
-    }
 
     @Test
     void shouldTransformPlaneEventToFlightEvent() throws JSONException {
