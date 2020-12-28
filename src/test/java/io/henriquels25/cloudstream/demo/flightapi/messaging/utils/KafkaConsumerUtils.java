@@ -16,7 +16,7 @@ public class KafkaConsumerUtils {
     public static Consumer<String, String> createConsumer(EmbeddedKafkaBroker embeddedKafka, String topic) {
         Map<String, Object> consumerProps = KafkaTestUtils.consumerProps(UUID.randomUUID().toString(),
                 "true", embeddedKafka);
-        consumerProps.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+        consumerProps.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
         ConsumerFactory<String, String> cf = new DefaultKafkaConsumerFactory<>(consumerProps);
         Consumer<String, String> consumer = cf.createConsumer();
         embeddedKafka.consumeFromAnEmbeddedTopic(consumer, topic);
