@@ -2,6 +2,8 @@ package io.henriquels25.cloudstream.demo.flightapi.flight;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -10,11 +12,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static io.henriquels25.cloudstream.demo.flightapi.TestData.FLIGHT;
+import static io.henriquels25.cloudstream.demo.flightapi.TestData.*;
+import static io.henriquels25.cloudstream.demo.flightapi.flight.FlightStatus.ARRIVED;
+import static io.henriquels25.cloudstream.demo.flightapi.flight.FlightStatus.CONFIRMED;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class FlightFacadeTest {
@@ -24,6 +27,9 @@ class FlightFacadeTest {
 
     @InjectMocks
     private FlightFacade flightFacade;
+
+    @Captor
+    private ArgumentCaptor<Flight> flightArgumentCaptor;
 
     private final static String CREATED_ID = "id";
 
@@ -66,6 +72,47 @@ class FlightFacadeTest {
 
         assertThrows(IllegalStateException.class,
                 () -> flightFacade.findConfirmedFlightByPlaneId(id));
+    }
+
+    @Test
+    void shouldSaveAnArrivedFlightWhenFlightArrivesInDestination() {
+        when(flightRepository.findById(FLIGHT_ID)).thenReturn(Optional.of(FLIGHT_WITH_ID));
+
+        flightFacade.flightArrivedIn(FLIGHT_ID, CNH);
+
+        verify(flightRepository).findById(FLIGHT_ID);
+        verify(flightRepository).save(flightArgumentCaptor.capture());
+
+        Flight savedFlight = flightArgumentCaptor.getValue();
+        assertThat(savedFlight.getStatus()).isEqualTo(ARRIVED);
+        assertThat(savedFlight.getId()).isEqualTo(FLIGHT_ID);
+    }
+
+    @Test
+    void shouldNotSetStatusToArrivedWhenItArrivesInAnotherAirport() {
+        when(flightRepository.findById(FLIGHT_ID)).thenReturn(Optional.of(FLIGHT_WITH_ID));
+
+        flightFacade.flightArrivedIn(FLIGHT_ID, POA);
+
+        verify(flightRepository).findById(FLIGHT_ID);
+        verify(flightRepository).save(flightArgumentCaptor.capture());
+
+        Flight savedFlight = flightArgumentCaptor.getValue();
+        assertThat(savedFlight.getStatus()).isEqualTo(CONFIRMED);
+        assertThat(savedFlight.getId()).isEqualTo(FLIGHT_ID);
+    }
+
+    @Test
+    void shouldThrowFlightNotFoundExceptionWhenFlightDoesNotExist() {
+        when(flightRepository.findById(FLIGHT_ID)).thenReturn(Optional.empty());
+
+        var exception = assertThrows(FlightNotFoundException.class,
+                () -> flightFacade.flightArrivedIn(FLIGHT_ID, POA));
+
+        verify(flightRepository).findById(FLIGHT_ID);
+        verifyNoMoreInteractions(flightRepository);
+
+        assertThat(exception.getMessage()).contains(FLIGHT_ID);
     }
 
 }
