@@ -32,6 +32,11 @@ class FlightFacade implements FlightOperations {
 
     @Override
     public void flightArrivedIn(String flightId, Airport airport) {
-        throw new UnsupportedOperationException("Not yet implemented");
+        Flight flight = flightRepository
+                .findById(flightId)
+                .orElseThrow(() -> new FlightNotFoundException(flightId));
+
+        flightRepository.save(flight.arrivedIn(airport));
     }
+
 }

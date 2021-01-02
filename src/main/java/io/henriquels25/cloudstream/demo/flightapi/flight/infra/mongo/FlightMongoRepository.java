@@ -6,6 +6,10 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
+
+import static io.henriquels25.cloudstream.demo.flightapi.flight.FlightStatus.CONFIRMED;
+import static java.util.stream.Collectors.toList;
 
 @Component
 @AllArgsConstructor
@@ -22,6 +26,14 @@ class FlightMongoRepository implements FlightRepository {
 
     @Override
     public List<Flight> findConfirmedFlightsByPlaneId(String planeId) {
-        throw new UnsupportedOperationException("Not yet implemented");
+        List<FlightDocument> documents = springFlightRepository.
+                findByPlaneIdAndStatus(planeId, CONFIRMED);
+        return documents.stream().map(flightMapper::fromDocument)
+                .collect(toList());
+    }
+
+    @Override
+    public Optional<Flight> findById(String flightId) {
+        return springFlightRepository.findById(flightId).map(flightMapper::fromDocument);
     }
 }

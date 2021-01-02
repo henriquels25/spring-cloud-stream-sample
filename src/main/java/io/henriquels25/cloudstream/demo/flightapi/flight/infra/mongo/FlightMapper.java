@@ -12,4 +12,9 @@ interface FlightMapper {
     @Mapping(source = "destination.code", target = "destinationCode")
     FlightDocument toDocument(Flight flight);
 
+    @Mapping(source = "planeId", target = "plane.id")
+    @Mapping(source = "originCode", target = "origin.code")
+    @Mapping(source = "destinationCode", target = "destination.code")
+    Flight fromDocument(FlightDocument flight);
+
 }
