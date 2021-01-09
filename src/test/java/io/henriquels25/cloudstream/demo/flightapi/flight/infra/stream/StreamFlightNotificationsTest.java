@@ -3,7 +3,6 @@ package io.henriquels25.cloudstream.demo.flightapi.flight.infra.stream;
 import io.henriquels25.cloudstream.demo.flightapi.messaging.CloudStreamTest;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.binder.test.OutputDestination;
@@ -24,7 +23,6 @@ class StreamFlightNotificationsTest {
     private StreamFlightNotifications notifications;
 
     @Test
-    @Disabled
     void flightArrived() throws JSONException {
         notifications.flightArrived(FLIGHT_ID);
 
