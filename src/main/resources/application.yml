@@ -25,3 +25,5 @@ spring:
         flightEventConsumer-in-0:
           destination: flight-events-v1
           group: flight-api
+        flightArrived-out-0:
+          destination: flight-arrived-v1

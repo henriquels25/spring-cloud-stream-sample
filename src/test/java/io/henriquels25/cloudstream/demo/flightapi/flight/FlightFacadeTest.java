@@ -25,6 +25,9 @@ class FlightFacadeTest {
     @Mock
     private FlightRepository flightRepository;
 
+    @Mock
+    private FlightNotifications flightNotifications;
+
     @InjectMocks
     private FlightFacade flightFacade;
 
@@ -75,7 +78,7 @@ class FlightFacadeTest {
     }
 
     @Test
-    void shouldSaveAnArrivedFlightWhenFlightArrivesInDestination() {
+    void shouldSaveAnArrivedFlightWhenFlightArrivesInDestinationAndSendANotification() {
         when(flightRepository.findById(FLIGHT_ID)).thenReturn(Optional.of(FLIGHT_WITH_ID));
 
         flightFacade.flightArrivedIn(FLIGHT_ID, CNH);
@@ -86,6 +89,8 @@ class FlightFacadeTest {
         Flight savedFlight = flightArgumentCaptor.getValue();
         assertThat(savedFlight.getStatus()).isEqualTo(ARRIVED);
         assertThat(savedFlight.getId()).isEqualTo(FLIGHT_ID);
+
+        verify(flightNotifications).flightArrived(FLIGHT_ID);
     }
 
     @Test
@@ -100,6 +105,8 @@ class FlightFacadeTest {
         Flight savedFlight = flightArgumentCaptor.getValue();
         assertThat(savedFlight.getStatus()).isEqualTo(CONFIRMED);
         assertThat(savedFlight.getId()).isEqualTo(FLIGHT_ID);
+
+        verifyNoInteractions(flightNotifications);
     }
 
     @Test
@@ -113,6 +120,8 @@ class FlightFacadeTest {
         verifyNoMoreInteractions(flightRepository);
 
         assertThat(exception.getMessage()).contains(FLIGHT_ID);
+
+        verifyNoInteractions(flightNotifications);
     }
 
 }

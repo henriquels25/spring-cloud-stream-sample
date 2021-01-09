@@ -7,11 +7,14 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+import static io.henriquels25.cloudstream.demo.flightapi.flight.FlightStatus.ARRIVED;
+
 @Service
 @AllArgsConstructor
 class FlightFacade implements FlightOperations {
 
     private final FlightRepository flightRepository;
+    private final FlightNotifications flightNotifications;
 
     @Override
     public String create(Flight flight) {
@@ -36,7 +39,13 @@ class FlightFacade implements FlightOperations {
                 .findById(flightId)
                 .orElseThrow(() -> new FlightNotFoundException(flightId));
 
-        flightRepository.save(flight.arrivedIn(airport));
+        Flight updatedFlight = flight.arrivedIn(airport);
+
+        flightRepository.save(updatedFlight);
+
+        if (updatedFlight.getStatus() == ARRIVED) {
+            flightNotifications.flightArrived(flightId);
+        }
     }
 
 }
