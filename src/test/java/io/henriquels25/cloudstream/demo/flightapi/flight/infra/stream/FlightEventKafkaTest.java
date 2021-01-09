@@ -2,12 +2,12 @@ package io.henriquels25.cloudstream.demo.flightapi.flight.infra.stream;
 
 import io.henriquels25.cloudstream.demo.flightapi.airport.Airport;
 import io.henriquels25.cloudstream.demo.flightapi.flight.FlightOperations;
+import io.henriquels25.cloudstream.demo.flightapi.messaging.utils.KafkaTestUtils;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.clients.producer.Producer;
-import org.apache.kafka.clients.producer.ProducerRecord;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,9 +17,6 @@ import org.springframework.kafka.test.context.EmbeddedKafka;
 
 import static io.henriquels25.cloudstream.demo.flightapi.TestData.CNH_CODE;
 import static io.henriquels25.cloudstream.demo.flightapi.TestData.FLIGHT_ID;
-import static io.henriquels25.cloudstream.demo.flightapi.messaging.utils.KafkaConsumerUtils.createConsumer;
-import static io.henriquels25.cloudstream.demo.flightapi.messaging.utils.KafkaConsumerUtils.getNextRecord;
-import static io.henriquels25.cloudstream.demo.flightapi.messaging.utils.KafkaProducerUtils.createProducer;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.mockito.Mockito.*;
@@ -36,12 +33,19 @@ class FlightEventKafkaTest {
     @MockBean
     private FlightOperations flightOperations;
 
+    private KafkaTestUtils kafkaTestUtils;
+
+    @BeforeEach
+    void prepare() {
+        this.kafkaTestUtils = new KafkaTestUtils(broker);
+    }
+
     @Test
     void shouldCallFlightOperationsWhenMessageIsReceived() throws JSONException, InterruptedException {
         String flightEvent = new JSONObject().put("flightId", FLIGHT_ID)
                 .put("currentAirport", CNH_CODE).toString();
 
-        sendMessage("flight-events-v1", flightEvent);
+        kafkaTestUtils.sendMessage("flight-events-v1", flightEvent);
 
         await().untilAsserted(() -> verify(flightOperations).
                 flightArrivedIn(FLIGHT_ID, new Airport(CNH_CODE)));
@@ -53,14 +57,14 @@ class FlightEventKafkaTest {
         doThrow(RuntimeException.class)
                 .when(flightOperations).flightArrivedIn(FLIGHT_ID, new Airport(CNH_CODE));
 
-        Consumer<String, String> consumer = createConsumer(broker, "flight-events-dlq-v1");
+        Consumer<String, String> consumer = kafkaTestUtils.createConsumer("flight-events-dlq-v1");
 
         String flightEvent = new JSONObject().put("flightId", FLIGHT_ID)
                 .put("currentAirport", CNH_CODE).toString();
 
-        sendMessage("flight-events-v1", flightEvent);
+        kafkaTestUtils.sendMessage("flight-events-v1", flightEvent);
 
-        ConsumerRecord<String, String> record = getNextRecord(consumer, "flight-events-dlq-v1");
+        ConsumerRecord<String, String> record = kafkaTestUtils.getNextRecord(consumer, "flight-events-dlq-v1");
 
         var jsonFlightEvent = new JSONObject(record.value());
         assertThat(jsonFlightEvent.get("currentAirport")).isEqualTo(CNH_CODE);
@@ -70,11 +74,5 @@ class FlightEventKafkaTest {
 
         verify(flightOperations, times(3)).flightArrivedIn(FLIGHT_ID,
                 new Airport(CNH_CODE));
-    }
-
-    private void sendMessage(String topic, String json) {
-        Producer<String, String> producer = createProducer(broker);
-
-        producer.send(new ProducerRecord<>(topic, json));
     }
 }
