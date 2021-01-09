@@ -1,5 +1,6 @@
 package io.henriquels25.cloudstream.demo.flightapi.acceptance.flight;
 
+import io.henriquels25.cloudstream.demo.flightapi.acceptance.AcceptanceTest;
 import io.henriquels25.cloudstream.demo.flightapi.flight.Flight;
 import io.henriquels25.cloudstream.demo.flightapi.flight.FlightRepository;
 import io.henriquels25.cloudstream.demo.flightapi.messaging.utils.KafkaTestUtils;
@@ -7,7 +8,6 @@ import io.henriquels25.cloudstream.demo.flightapi.plane.PlaneRepository;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.kafka.test.EmbeddedKafkaBroker;
@@ -42,7 +42,7 @@ class FlightArrivedAcceptanceTest {
         this.kafkaTestUtils = new KafkaTestUtils(broker);
     }
 
-    @Test
+    @AcceptanceTest
     void shouldCreateAFlightAndChangeTheStatusToArrived() throws JSONException {
         String planeId = planeRepository.save(PLANE);
 
