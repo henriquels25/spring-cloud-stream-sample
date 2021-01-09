@@ -4,6 +4,7 @@ plugins {
     id 'java'
     id "org.sonarqube" version "3.0"
     id 'jacoco'
+    id 'com.adarshr.test-logger' version '2.1.1'
 }
 
 group = 'io.henriquels25.cloudstream.demo'
@@ -56,7 +57,19 @@ dependencyManagement {
 }
 
 test {
-    useJUnitPlatform()
+    useJUnitPlatform {
+        excludeTags 'acceptance'
+    }
+}
+
+task acceptanceTest(type: Test) {
+    useJUnitPlatform {
+        includeTags 'acceptance'
+    }
+}
+
+testlogger {
+    showSimpleNames true
 }
 
 jacocoTestReport {
