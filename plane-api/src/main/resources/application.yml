@@ -1,0 +1,6 @@
+spring:
+  cloud:
+    stream:
+      bindings:
+        planeEvent-out-0:
+          destination: plane-events-v1
