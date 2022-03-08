@@ -47,7 +47,8 @@ class PlaneControllerTest {
         mockMvc.perform(get("/planes/" + PLANE_ID))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("code").value(PLANE.getCode()))
-                .andExpect(jsonPath("type").value(PLANE.getType()));
+                .andExpect(jsonPath("type").value(PLANE.getType()))
+                .andExpect(jsonPath("airport.code").value(POA_CODE));
 
         verify(planeOperations).findById(PLANE_ID);
     }
