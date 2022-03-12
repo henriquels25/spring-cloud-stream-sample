@@ -10,7 +10,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
-import static com.henriquels25.airlines.plane.TestData.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
@@ -31,57 +30,57 @@ class PlaneFacadeTest {
 
     @Test
     void shouldCreateAPlane() {
-        when(planeRepository.save(PLANE)).thenReturn(CREATED_ID);
+        when(planeRepository.save(TestData.PLANE)).thenReturn(CREATED_ID);
 
-        String id = planeFacade.create(PLANE);
+        String id = planeFacade.create(TestData.PLANE);
 
         assertThat(id).isEqualTo(CREATED_ID);
-        verify(planeRepository).save(PLANE);
+        verify(planeRepository).save(TestData.PLANE);
     }
 
     @Test
     void shouldFindByIdWhenPlaneExists() {
-        when(planeRepository.findById(PLANE_ID)).thenReturn(Optional.of(PLANE));
+        when(planeRepository.findById(TestData.PLANE_ID)).thenReturn(Optional.of(TestData.PLANE));
 
-        Optional<Plane> optPlane = planeFacade.findById(PLANE_ID);
+        Optional<Plane> optPlane = planeFacade.findById(TestData.PLANE_ID);
 
-        assertThat(optPlane).hasValue(PLANE);
-        verify(planeRepository).findById(PLANE_ID);
+        assertThat(optPlane).hasValue(TestData.PLANE);
+        verify(planeRepository).findById(TestData.PLANE_ID);
     }
 
     @Test
     void shouldFindByIdWhenPlaneDoesNotExist() {
-        when(planeRepository.findById(PLANE_ID)).thenReturn(Optional.empty());
+        when(planeRepository.findById(TestData.PLANE_ID)).thenReturn(Optional.empty());
 
-        Optional<Plane> optPlane = planeFacade.findById(PLANE_ID);
+        Optional<Plane> optPlane = planeFacade.findById(TestData.PLANE_ID);
 
         assertThat(optPlane).isEmpty();
-        verify(planeRepository).findById(PLANE_ID);
+        verify(planeRepository).findById(TestData.PLANE_ID);
     }
 
     @Test
     void shouldChangeAirportOfPlaneAndSendEvent() {
-        when(planeRepository.findById(PLANE_ID)).thenReturn(Optional.of(PLANE));
+        when(planeRepository.findById(TestData.PLANE_ID)).thenReturn(Optional.of(TestData.PLANE));
 
-        planeFacade.arrivedIn(PLANE_ID, POA_AIRPORT);
+        planeFacade.arrivedIn(TestData.PLANE_ID, TestData.POA_AIRPORT);
 
-        verify(planeRepository).findById(PLANE_ID);
-        verify(planeRepository).save(PLANE.toBuilder().airport(POA_AIRPORT).build());
+        verify(planeRepository).findById(TestData.PLANE_ID);
+        verify(planeRepository).save(TestData.PLANE.toBuilder().airport(TestData.POA_AIRPORT).build());
 
         verify(planeEventSender).send(PlaneEvent.builder()
-                .planeId(PLANE_ID)
-                .currentAirport(POA_CODE)
+                .planeId(TestData.PLANE_ID)
+                .currentAirport(TestData.POA_CODE)
                 .build());
 
     }
 
     @Test
     void shouldThrowExceptionWhenPlaneDoesNotExist() {
-        when(planeRepository.findById(PLANE_ID)).thenReturn(Optional.empty());
+        when(planeRepository.findById(TestData.PLANE_ID)).thenReturn(Optional.empty());
 
-        assertThrows(PlaneNotFoundException.class, () -> planeFacade.arrivedIn(PLANE_ID, POA_AIRPORT));
+        assertThrows(PlaneNotFoundException.class, () -> planeFacade.arrivedIn(TestData.PLANE_ID, TestData.POA_AIRPORT));
 
-        verify(planeRepository).findById(PLANE_ID);
+        verify(planeRepository).findById(TestData.PLANE_ID);
         verifyNoMoreInteractions(planeRepository);
         verifyNoInteractions(planeEventSender);
     }

@@ -1,5 +1,6 @@
 package com.henriquels25.airlines.plane.infra.stream;
 
+import com.henriquels25.airlines.plane.TestData;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.json.JSONException;
@@ -11,7 +12,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.kafka.test.EmbeddedKafkaBroker;
 import org.springframework.kafka.test.context.EmbeddedKafka;
 
-import static com.henriquels25.airlines.plane.TestData.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
@@ -33,19 +33,19 @@ class StreamPlaneEventSenderTest {
     void prepare() {
         this.kafkaTestUtils = new KafkaTestUtils(broker);
     }
-    
+
     @Test
     void shouldSendEventToTopic() throws JSONException {
         Consumer<String, String> consumer =
                 kafkaTestUtils.createConsumer(TOPIC_NAME);
 
-        planeEventSender.send(PLANE_EVENT);
+        planeEventSender.send(TestData.PLANE_EVENT);
 
         ConsumerRecord<String, String> record = kafkaTestUtils.getNextRecord(consumer, TOPIC_NAME);
 
         var jsonEvent = new JSONObject(record.value());
-        assertThat(jsonEvent.get("planeId")).isEqualTo(PLANE_ID);
-        assertThat(jsonEvent.get("currentAirport")).isEqualTo(POA_CODE);
+        assertThat(jsonEvent.get("planeId")).isEqualTo(TestData.PLANE_ID);
+        assertThat(jsonEvent.get("currentAirport")).isEqualTo(TestData.POA_CODE);
     }
 
 }

@@ -29,7 +29,7 @@ class PlaneFacade implements PlaneOperations {
     public void arrivedIn(String planeId, Airport airport) {
         Plane plane = planeRepository.findById(planeId).orElseThrow(PlaneNotFoundException::new);
         planeRepository.save(plane.toBuilder().airport(airport).build());
-        
+
         planeEventSender.send(PlaneEvent.builder().planeId(planeId).currentAirport(airport.getCode()).build());
     }
 }

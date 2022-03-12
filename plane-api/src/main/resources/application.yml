@@ -6,3 +6,4 @@ spring:
           destination: plane-events-v1
   data.mongodb.uri: mongodb://plane-api:plane-api-pass@localhost:27017/plane_db
 
+server.port: 8090

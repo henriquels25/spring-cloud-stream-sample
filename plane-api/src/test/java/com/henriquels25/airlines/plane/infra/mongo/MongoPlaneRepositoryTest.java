@@ -1,6 +1,7 @@
 package com.henriquels25.airlines.plane.infra.mongo;
 
 import com.henriquels25.airlines.plane.Plane;
+import com.henriquels25.airlines.plane.TestData;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
@@ -9,7 +10,6 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 
 import java.util.Optional;
 
-import static com.henriquels25.airlines.plane.TestData.POA_AIRPORT;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataMongoTest
@@ -52,11 +52,11 @@ class MongoPlaneRepositoryTest {
         String id = mongoPlaneRepository.save(plane);
 
         plane = mongoPlaneRepository.findById(id).get();
-        plane = plane.toBuilder().airport(POA_AIRPORT).build();
+        plane = plane.toBuilder().airport(TestData.POA_AIRPORT).build();
 
         mongoPlaneRepository.save(plane);
         plane = mongoPlaneRepository.findById(id).get();
-        
-        assertThat(plane.getAirport()).isEqualTo(POA_AIRPORT);
+
+        assertThat(plane.getAirport()).isEqualTo(TestData.POA_AIRPORT);
     }
 }

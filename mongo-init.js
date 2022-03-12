@@ -12,3 +12,18 @@ db.createUser(
             ]
         }
 );
+
+db = db.getSiblingDB('flight_db');
+
+db.createUser(
+        {
+            user: "flight-api",
+            pwd: "flight-api-pass",
+            roles: [
+                {
+                    role: "readWrite",
+                    db: "flight_db"
+                }
+            ]
+        }
+);

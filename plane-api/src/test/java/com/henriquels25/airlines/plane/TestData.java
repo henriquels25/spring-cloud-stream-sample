@@ -25,7 +25,7 @@ public class TestData {
     public static final Plane PLANE = Plane.builder().code(CODE).type(TYPE).airport(POA_AIRPORT).build();
     public static final Plane PLANE_WITH_ID = Plane.builder().id(PLANE_ID).code(CODE).type(TYPE).build();
     public static final Plane PLANE_WITH_ID_2 = Plane.builder().id(PLANE_ID_2).code(CODE).type(TYPE).build();
-    
+
     public static final PlaneEvent PLANE_EVENT = PlaneEvent.builder()
             .planeId(PLANE_ID)
             .currentAirport(POA_CODE)

@@ -1,0 +1,30 @@
+spring:
+  data.mongodb.uri: mongodb://flight-api:flight-api-pass@localhost:27017/flight_db
+  cloud.stream:
+    function.definition: planeEventProcessor;flightEventConsumer
+    kafka:
+      bindings:
+        planeEventProcessor-in-0:
+          consumer:
+            enableDlq: true
+            dlqName: plane-events-dlq-v1
+        flightEventConsumer-in-0:
+          consumer:
+            enableDlq: true
+            dlqName: flight-events-dlq-v1
+    bindings:
+      planeEventProcessor-in-0:
+        destination: plane-events-v1
+        group: flight-api
+        consumer:
+          retryable-exceptions:
+            com.henriquels25.airlines.plane.infra.stream.NoFlightFoundException: false
+      planeEventProcessor-out-0:
+        destination: flight-events-v1
+      flightEventConsumer-in-0:
+        destination: flight-events-v1
+        group: flight-api
+      flightArrived-out-0:
+        destination: flight-arrived-v1
+
+server.port: 8091
