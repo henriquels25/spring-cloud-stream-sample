@@ -1,5 +1,6 @@
 package com.henriquels25.airlines.plane.infra.controller;
 
+import com.henriquels25.airlines.plane.Plane;
 import com.henriquels25.airlines.plane.PlaneOperations;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,14 +31,15 @@ class PlaneControllerTest {
 
     @Test
     void create() throws Exception {
-        when(planeOperations.create(PLANE)).thenReturn(PLANE_ID);
+        Plane plane = PLANE.toBuilder().airport(null).build();
+        when(planeOperations.create(plane)).thenReturn(PLANE_ID);
 
         mockMvc.perform(post("/planes").contentType(MediaType.APPLICATION_JSON)
-                        .content(toJson(PLANE)))
+                        .content(toJson(PlaneDTO.builder().code(CODE).type(TYPE).build())))
                 .andExpect(status().isCreated())
                 .andExpect(header().string("location", "/planes/" + PLANE_ID));
 
-        verify(planeOperations).create(PLANE);
+        verify(planeOperations).create(plane);
     }
 
     @Test

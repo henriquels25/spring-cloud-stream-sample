@@ -3,6 +3,7 @@ plugins {
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'java'
 	id "io.freefair.lombok" version "6.4.1"
+	id 'jacoco'
 }
 
 group = 'com.henriquels25.airlines.plane'
@@ -50,4 +51,8 @@ dependencyManagement {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+jacocoTestReport {
+	dependsOn test
 }

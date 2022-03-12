@@ -32,7 +32,7 @@ public class TestData {
             .build();
 
     @SneakyThrows
-    public static String toJson(Plane plane) {
+    public static String toJson(Object plane) {
         return OBJECT_MAPPER.writeValueAsString(plane);
     }
 
