@@ -28,8 +28,7 @@ class FlightMongoRepository implements FlightRepository {
     public List<Flight> findConfirmedFlightsByPlaneId(String planeId) {
         List<FlightDocument> documents = springFlightRepository.
                 findByPlaneIdAndStatus(planeId, CONFIRMED);
-        return documents.stream().map(flightMapper::fromDocument)
-                .collect(toList());
+        return documents.stream().map(flightMapper::fromDocument).toList();
     }
 
     @Override

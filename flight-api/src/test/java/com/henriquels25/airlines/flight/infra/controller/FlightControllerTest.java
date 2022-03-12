@@ -33,7 +33,7 @@ class FlightControllerTest {
     private FlightOperations flightOperations;
 
     @Test
-    public void shouldCreateAFlight() throws Exception {
+    void shouldCreateAFlight() throws Exception {
         FlightDTO flightDTO = FlightDTO.builder()
                 .planeId(PLANE_ID)
                 .origin(POA_CODE)
