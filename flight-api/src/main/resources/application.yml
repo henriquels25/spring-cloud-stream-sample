@@ -18,7 +18,7 @@ spring:
         group: flight-api
         consumer:
           retryable-exceptions:
-            com.henriquels25.airlines.plane.infra.stream.NoFlightFoundException: false
+            com.henriquels25.flightapi.plane.infra.stream.NoFlightFoundException: false
       planeEventProcessor-out-0:
         destination: flight-events-v1
       flightEventConsumer-in-0:

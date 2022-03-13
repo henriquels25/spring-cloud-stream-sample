@@ -4,28 +4,6 @@ plugins {
     id 'org.sonarqube' version '3.2.0'
 }
 
-allprojects {
-    version = '1.0.2'
-    group = 'org.sonarqube.sample'
-
-    repositories {
-        jcenter()
-    }
-}
-
-subprojects {
-    apply plugin: 'org.sonarqube'
-    sonarqube {
-        properties {
-            property 'sonar.coverage.jacoco.xmlReportPaths', "$projectDir.parentFile.path/build/reports/jacoco/codeCoverageReport/codeCoverageReport.xml"
-        }
-    }
-
-    tasks.withType(Test).configureEach {
-        useJUnitPlatform()
-    }
-}
-
 sonarqube {
     properties {
         property "sonar.projectKey", "henriquels25_spring-cloud-stream-sample"
@@ -34,10 +12,6 @@ sonarqube {
         property "sonar.login", "689c395e7464ac15bcfe2f5ec5bc83bf18e90d34"
     }
 }
-
-// See here for more info: https://docs.gradle.org/6.4-rc-1/samples/sample_jvm_multi_project_with_code_coverage.html
-//
-// tag::coverageTask[]
 // task to gather code coverage from multiple subprojects
 // NOTE: the `JacocoReport` tasks do *not* depend on the `test` task by default. Meaning you have to ensure
 // that `test` (or other tasks generating code coverage) run before generating the report.
@@ -48,13 +22,8 @@ tasks.register("codeCoverageReport", JacocoReport) {
     subprojects { subproject ->
         subproject.plugins.withType(JacocoPlugin).configureEach {
             subproject.tasks.matching({ t -> t.extensions.findByType(JacocoTaskExtension) }).configureEach { testTask ->
-                //the jacoco extension may be disabled for some projects
-                if (testTask.extensions.getByType(JacocoTaskExtension).isEnabled()) {
-                    sourceSets subproject.sourceSets.main
-                    executionData(testTask)
-                }else{
-                    logger.warn('Jacoco extension is disabled for test task \'{}\' in project \'{}\'. this test task will be excluded from jacoco report.',testTask.getName(),subproject.getName())
-                }
+                sourceSets subproject.sourceSets.main
+                executionData(testTask)
             }
 
             // To automatically run `test` every time `./gradlew codeCoverageReport` is called,
