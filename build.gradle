@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'jacoco'
     id 'org.sonarqube' version '3.2.0'
+    id 'com.adarshr.test-logger' version '2.1.1'
 }
 
 repositories {
@@ -19,6 +20,7 @@ allprojects {
 
 subprojects {
     apply plugin: 'org.sonarqube'
+    apply plugin: 'com.adarshr.test-logger'
     sonarqube {
         properties {
             property 'sonar.coverage.jacoco.xmlReportPaths', "$projectDir.parentFile.path/build/reports/jacoco/codeCoverageReport/codeCoverageReport.xml"
@@ -71,4 +73,8 @@ tasks.register("codeCoverageReport", JacocoReport) {
         // without any external tools
         html.enabled true
     }
+}
+
+testlogger {
+    showSimpleNames true
 }
