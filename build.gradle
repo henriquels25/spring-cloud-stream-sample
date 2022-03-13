@@ -4,12 +4,37 @@ plugins {
     id 'org.sonarqube' version '3.2.0'
 }
 
+repositories {
+    mavenCentral()
+}
+
+allprojects {
+    version = '1.0.2'
+    group = 'com.henriquels25.airlines'
+
+    repositories {
+        mavenCentral()
+    }
+}
+
+subprojects {
+    apply plugin: 'org.sonarqube'
+    sonarqube {
+        properties {
+            property 'sonar.coverage.jacoco.xmlReportPaths', "$projectDir.parentFile.path/build/reports/jacoco/codeCoverageReport/codeCoverageReport.xml"
+        }
+    }
+
+    tasks.withType(Test).configureEach {
+        useJUnitPlatform()
+    }
+}
+
 sonarqube {
     properties {
         property "sonar.projectKey", "henriquels25_spring-cloud-stream-sample"
         property "sonar.organization", "henriquels"
         property "sonar.host.url", "https://sonarcloud.io"
-        property "sonar.login", "689c395e7464ac15bcfe2f5ec5bc83bf18e90d34"
     }
 }
 // task to gather code coverage from multiple subprojects
