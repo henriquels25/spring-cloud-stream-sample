@@ -56,3 +56,9 @@ tasks.named('test') {
 jacocoTestReport {
 	dependsOn test
 }
+
+sonarqube {
+	properties {
+		property "sonar.exclusions", "**/PlaneApiApplication.java"
+	}
+}
