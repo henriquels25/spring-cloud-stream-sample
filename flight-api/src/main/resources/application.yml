@@ -13,7 +13,6 @@ spring:
             enableDlq: true
             dlqName: flight-events-dlq-v1
         planeEventProcessor-out-0:
-          destination: flight-events-v1
           producer.configuration:
             key.serializer: org.apache.kafka.common.serialization.StringSerializer
     bindings:
@@ -25,8 +24,6 @@ spring:
             com.henriquels25.flightapi.plane.infra.stream.NoFlightFoundException: false
       planeEventProcessor-out-0:
         destination: flight-events-v1
-        producer:
-          useNativeDecoding: true
       flightEventConsumer-in-0:
         destination: flight-events-v1
         group: flight-api
