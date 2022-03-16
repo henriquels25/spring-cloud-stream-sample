@@ -13,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.kafka.test.EmbeddedKafkaBroker;
 import org.springframework.kafka.test.context.EmbeddedKafka;
+import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.Optional;
 
@@ -24,6 +25,7 @@ import static org.mockito.Mockito.when;
 @EmbeddedKafka(topics = {"plane-arrived-v1",
         "flight-arrived-v1", "plane-arrived-dlq-v1", "flight-arrived-dlq-v1"},
         bootstrapServersProperty = "spring.cloud.stream.kafka.binder.brokers")
+@DirtiesContext
 class PlaneEventKafkaTest {
 
     @Autowired
