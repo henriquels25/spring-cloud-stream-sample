@@ -2,10 +2,12 @@ package com.henriquels25.flightapi.plane.infra.stream;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
-class FlightEvent {
-    private final String flightId;
-    private final String currentAirport;
+class PlaneArrived {
+    private String planeId;
+    private String currentAirport;
 }

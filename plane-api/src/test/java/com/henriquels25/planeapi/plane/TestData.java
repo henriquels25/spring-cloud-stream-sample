@@ -2,8 +2,7 @@ package com.henriquels25.planeapi.plane;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.henriquels25.planeapi.airport.Airport;
-import com.henriquels25.planeapi.plane.Plane;
-import com.henriquels25.planeapi.plane.infra.stream.PlaneEvent;
+import com.henriquels25.planeapi.plane.infra.stream.PlaneArrived;
 import lombok.SneakyThrows;
 
 public class TestData {
@@ -27,7 +26,7 @@ public class TestData {
     public static final Plane PLANE_WITH_ID = Plane.builder().id(PLANE_ID).code(CODE).type(TYPE).build();
     public static final Plane PLANE_WITH_ID_2 = Plane.builder().id(PLANE_ID_2).code(CODE).type(TYPE).build();
 
-    public static final PlaneEvent PLANE_EVENT = PlaneEvent.builder()
+    public static final PlaneArrived PLANE_EVENT = PlaneArrived.builder()
             .planeId(PLANE_ID)
             .currentAirport(POA_CODE)
             .build();

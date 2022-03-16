@@ -1,8 +1,8 @@
 package com.henriquels25.planeapi.plane;
 
 import com.henriquels25.planeapi.airport.Airport;
-import com.henriquels25.planeapi.plane.infra.stream.PlaneEvent;
-import com.henriquels25.planeapi.plane.infra.stream.PlaneEventSender;
+import com.henriquels25.planeapi.plane.infra.stream.PlaneArrived;
+import com.henriquels25.planeapi.plane.infra.stream.PlaneArrivedSender;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +13,7 @@ import java.util.Optional;
 class PlaneFacade implements PlaneOperations {
 
     private final PlaneRepository planeRepository;
-    private final PlaneEventSender planeEventSender;
+    private final PlaneArrivedSender planeEventSender;
 
     @Override
     public String create(Plane plane) {
@@ -30,6 +30,6 @@ class PlaneFacade implements PlaneOperations {
         Plane plane = planeRepository.findById(planeId).orElseThrow(PlaneNotFoundException::new);
         planeRepository.save(plane.toBuilder().airport(airport).build());
 
-        planeEventSender.send(PlaneEvent.builder().planeId(planeId).currentAirport(airport.getCode()).build());
+        planeEventSender.send(PlaneArrived.builder().planeId(planeId).currentAirport(airport.getCode()).build());
     }
 }

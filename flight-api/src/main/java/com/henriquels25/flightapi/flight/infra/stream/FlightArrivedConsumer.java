@@ -7,14 +7,14 @@ import org.springframework.stereotype.Component;
 
 import java.util.function.Consumer;
 
-@Component("flightEventConsumer")
+@Component("flightArrivedConsumer")
 @AllArgsConstructor
-class FlightEventConsumer implements Consumer<FlightEvent> {
+class FlightArrivedConsumer implements Consumer<FlightArrived> {
 
     private final FlightOperations flightOperations;
 
     @Override
-    public void accept(FlightEvent flightEvent) {
+    public void accept(FlightArrived flightEvent) {
         Airport airport = new Airport(flightEvent.getCurrentAirport());
         flightOperations.flightArrivedIn(flightEvent.getFlightId(), airport);
     }

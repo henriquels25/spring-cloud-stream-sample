@@ -20,9 +20,10 @@ import static com.henriquels25.flightapi.TestData.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.kafka.support.KafkaHeaders.MESSAGE_KEY;
 
 @CloudStreamTest
-@Import(PlaneEventProcessor.class)
+@Import(PlaneArrivedProcessor.class)
 class PlaneEventProcessorTest {
 
     @Autowired
@@ -42,14 +43,16 @@ class PlaneEventProcessorTest {
                 .put("currentAirport", CNH_CODE).toString();
 
         source.send(new GenericMessage<>(planeEvent.getBytes()),
-                "plane-events-v1");
+                "plane-arrived-v1");
 
         Message<byte[]> flightEvent = target.receive(0L,
-                "flight-events-v1");
+                "flight-arrived-v1");
 
         var jsonFlightEvent = new JSONObject(new String(flightEvent.getPayload()));
         assertThat(jsonFlightEvent.get("currentAirport")).isEqualTo(CNH_CODE);
         assertThat(jsonFlightEvent.get("flightId")).isEqualTo(FLIGHT_ID);
+
+        assertThat(flightEvent.getHeaders().get(MESSAGE_KEY)).isEqualTo(FLIGHT_ID);
 
         verify(flightOperations).findConfirmedFlightByPlaneId(PLANE_ID);
     }
@@ -63,10 +66,10 @@ class PlaneEventProcessorTest {
                 .put("currentAirport", CNH_CODE).toString();
 
         source.send(new GenericMessage<>(planeEvent.getBytes()),
-                "plane-events-v1");
+                "plane-arrived-v1");
 
         Message<byte[]> flightEvent = target.receive(0L,
-                "flight-events-v1");
+                "flight-arrived-v1");
 
         assertThat(flightEvent).isNull();
 
@@ -82,10 +85,10 @@ class PlaneEventProcessorTest {
                 .put("currentAirport", CNH_CODE).toString();
 
         source.send(new GenericMessage<>(planeEvent.getBytes()),
-                "plane-events-v1");
+                "plane-arrived-v1");
 
         Message<byte[]> flightEvent = target.receive(0L,
-                "flight-events-v1");
+                "flight-arrived-v1");
 
         assertThat(flightEvent).isNull();
 

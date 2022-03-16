@@ -18,8 +18,8 @@ import static com.henriquels25.flightapi.TestData.FLIGHT_ID;
 import static org.mockito.Mockito.verify;
 
 @CloudStreamTest
-@Import(FlightEventConsumer.class)
-class FlightEventConsumerTest {
+@Import(FlightArrivedConsumer.class)
+class FlightArrivedConsumerTest {
 
     @Autowired
     private InputDestination source;
@@ -35,7 +35,7 @@ class FlightEventConsumerTest {
                 .put("currentAirport", CNH_CODE).toString();
 
         source.send(new GenericMessage<>(planeEvent.getBytes()),
-                "flight-events-v1");
+                "flight-arrived-v1");
 
         verify(flightOperations).flightArrivedIn(FLIGHT_ID, new Airport(CNH_CODE));
     }

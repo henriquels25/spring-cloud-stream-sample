@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-class FlightArrivedEvent {
+class FlightArrived {
     private String flightId;
+    private String currentAirport;
 }

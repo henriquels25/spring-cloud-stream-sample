@@ -12,7 +12,7 @@ class StreamFlightNotifications implements FlightNotifications {
     private final StreamBridge streamBridge;
 
     @Override
-    public void flightArrived(String flightId) {
-        streamBridge.send("flightArrived-out-0", new FlightArrivedEvent(flightId));
+    public void flightFinished(String flightId) {
+        streamBridge.send("flightFinished-out-0", new FlightFinishedEvent(flightId));
     }
 }

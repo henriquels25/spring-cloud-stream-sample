@@ -5,6 +5,7 @@ import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
@@ -30,10 +31,12 @@ public class KafkaTestUtils {
     }
 
     public Consumer<String, String> createConsumer(String topic) {
-        Map<String, Object> consumerProps = org.springframework.kafka.test.utils.KafkaTestUtils.consumerProps(UUID.randomUUID().toString(),
+        Map<String, Object> consumerProps = org.springframework.kafka.test.utils.KafkaTestUtils
+                .consumerProps(UUID.randomUUID().toString(),
                 "true", broker);
         consumerProps.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
-        ConsumerFactory<String, String> cf = new DefaultKafkaConsumerFactory<>(consumerProps);
+        ConsumerFactory<String, String> cf = new DefaultKafkaConsumerFactory<>(consumerProps,
+                new StringDeserializer(), new StringDeserializer());
         Consumer<String, String> consumer = cf.createConsumer();
         broker.consumeFromAnEmbeddedTopic(consumer, topic);
         return consumer;
