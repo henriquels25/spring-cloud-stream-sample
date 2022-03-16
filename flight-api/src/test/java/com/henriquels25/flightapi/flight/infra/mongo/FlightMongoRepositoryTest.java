@@ -11,7 +11,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import java.util.List;
 import java.util.Optional;
 
-import static com.henriquels25.flightapi.flight.FlightStatus.ARRIVED;
+import static com.henriquels25.flightapi.flight.FlightStatus.FINISHED;
 import static com.henriquels25.flightapi.flight.FlightStatus.CONFIRMED;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -46,13 +46,13 @@ class FlightMongoRepositoryTest {
                 .destination(TestData.CNH)
                 .status(CONFIRMED).build();
         String id = flightMongoRepository.save(flight);
-        Flight updatedFlight = flight.toBuilder().id(id).status(ARRIVED).build();
+        Flight updatedFlight = flight.toBuilder().id(id).status(FINISHED).build();
 
         flightMongoRepository.save(updatedFlight);
 
         Flight flightDb = flightMongoRepository.findById(id).get();
 
-        assertThat(flightDb.getStatus()).isEqualTo(ARRIVED);
+        assertThat(flightDb.getStatus()).isEqualTo(FINISHED);
     }
 
     @Test

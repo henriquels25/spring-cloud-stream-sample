@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
-import static com.henriquels25.flightapi.flight.FlightStatus.ARRIVED;
+import static com.henriquels25.flightapi.flight.FlightStatus.FINISHED;
 import static com.henriquels25.flightapi.flight.FlightStatus.CONFIRMED;
 
 @Service
@@ -49,7 +49,7 @@ class FlightFacade implements FlightOperations {
 
         flightRepository.save(updatedFlight);
 
-        if (updatedFlight.getStatus() == ARRIVED) {
+        if (updatedFlight.getStatus() == FINISHED) {
             flightNotifications.flightFinished(flightId);
         }
     }
