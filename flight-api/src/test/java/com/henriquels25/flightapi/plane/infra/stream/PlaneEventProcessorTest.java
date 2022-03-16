@@ -52,7 +52,7 @@ class PlaneEventProcessorTest {
         assertThat(jsonFlightEvent.get("currentAirport")).isEqualTo(CNH_CODE);
         assertThat(jsonFlightEvent.get("flightId")).isEqualTo(FLIGHT_ID);
 
-        assertThat(flightEvent.getHeaders().get(MESSAGE_KEY)).isEqualTo(FLIGHT_ID);
+        assertThat(flightEvent.getHeaders()).containsEntry(MESSAGE_KEY, FLIGHT_ID);
 
         verify(flightOperations).findConfirmedFlightByPlaneId(PLANE_ID);
     }
