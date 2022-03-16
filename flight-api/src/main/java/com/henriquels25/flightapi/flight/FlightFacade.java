@@ -50,7 +50,7 @@ class FlightFacade implements FlightOperations {
         flightRepository.save(updatedFlight);
 
         if (updatedFlight.getStatus() == ARRIVED) {
-            flightNotifications.flightArrived(flightId);
+            flightNotifications.flightFinished(flightId);
         }
     }
 

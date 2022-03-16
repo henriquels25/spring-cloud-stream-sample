@@ -24,10 +24,10 @@ class StreamFlightNotificationsTest {
 
     @Test
     void flightArrived() throws JSONException {
-        notifications.flightArrived(FLIGHT_ID);
+        notifications.flightFinished(FLIGHT_ID);
 
         Message<byte[]> flightEvent = target.receive(0L,
-                "flight-arrived-v1");
+                "flight-finished-v1");
 
         var jsonFlightEvent = new JSONObject(new String(flightEvent.getPayload()));
         assertThat(jsonFlightEvent.get("flightId")).isEqualTo(FLIGHT_ID);

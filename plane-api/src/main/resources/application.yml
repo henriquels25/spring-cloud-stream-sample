@@ -2,7 +2,7 @@ spring:
   cloud:
     stream:
       bindings:
-        planeEvent-out-0:
+        planeArrived-out-0:
           destination: plane-events-v1
   data.mongodb.uri: mongodb://plane-api:plane-api-pass@localhost:27017/plane_db
 

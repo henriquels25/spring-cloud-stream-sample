@@ -1,7 +1,7 @@
 package com.henriquels25.planeapi.plane;
 
-import com.henriquels25.planeapi.plane.infra.stream.PlaneEvent;
-import com.henriquels25.planeapi.plane.infra.stream.PlaneEventSender;
+import com.henriquels25.planeapi.plane.infra.stream.PlaneArrived;
+import com.henriquels25.planeapi.plane.infra.stream.PlaneArrivedSender;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -21,7 +21,7 @@ class PlaneFacadeTest {
     private PlaneRepository planeRepository;
 
     @Mock
-    private PlaneEventSender planeEventSender;
+    private PlaneArrivedSender planeEventSender;
 
     @InjectMocks
     private PlaneFacade planeFacade;
@@ -67,7 +67,7 @@ class PlaneFacadeTest {
         verify(planeRepository).findById(TestData.PLANE_ID);
         verify(planeRepository).save(TestData.PLANE.toBuilder().airport(TestData.POA_AIRPORT).build());
 
-        verify(planeEventSender).send(PlaneEvent.builder()
+        verify(planeEventSender).send(PlaneArrived.builder()
                 .planeId(TestData.PLANE_ID)
                 .currentAirport(TestData.POA_CODE)
                 .build());

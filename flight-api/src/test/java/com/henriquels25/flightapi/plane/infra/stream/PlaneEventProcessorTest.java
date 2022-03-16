@@ -23,7 +23,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.kafka.support.KafkaHeaders.MESSAGE_KEY;
 
 @CloudStreamTest
-@Import(PlaneEventProcessor.class)
+@Import(PlaneArrivedProcessor.class)
 class PlaneEventProcessorTest {
 
     @Autowired
@@ -43,10 +43,10 @@ class PlaneEventProcessorTest {
                 .put("currentAirport", CNH_CODE).toString();
 
         source.send(new GenericMessage<>(planeEvent.getBytes()),
-                "plane-events-v1");
+                "plane-arrived-v1");
 
         Message<byte[]> flightEvent = target.receive(0L,
-                "flight-events-v1");
+                "flight-arrived-v1");
 
         var jsonFlightEvent = new JSONObject(new String(flightEvent.getPayload()));
         assertThat(jsonFlightEvent.get("currentAirport")).isEqualTo(CNH_CODE);
@@ -66,10 +66,10 @@ class PlaneEventProcessorTest {
                 .put("currentAirport", CNH_CODE).toString();
 
         source.send(new GenericMessage<>(planeEvent.getBytes()),
-                "plane-events-v1");
+                "plane-arrived-v1");
 
         Message<byte[]> flightEvent = target.receive(0L,
-                "flight-events-v1");
+                "flight-arrived-v1");
 
         assertThat(flightEvent).isNull();
 
@@ -85,10 +85,10 @@ class PlaneEventProcessorTest {
                 .put("currentAirport", CNH_CODE).toString();
 
         source.send(new GenericMessage<>(planeEvent.getBytes()),
-                "plane-events-v1");
+                "plane-arrived-v1");
 
         Message<byte[]> flightEvent = target.receive(0L,
-                "flight-events-v1");
+                "flight-arrived-v1");
 
         assertThat(flightEvent).isNull();
 

@@ -7,7 +7,7 @@ import lombok.*;
 @Builder
 @Getter
 @EqualsAndHashCode
-public class PlaneEvent {
+public class PlaneArrived {
     private String planeId;
     private String currentAirport;
 }

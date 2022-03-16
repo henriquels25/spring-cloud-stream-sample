@@ -1,33 +1,33 @@
 spring:
   data.mongodb.uri: mongodb://flight-api:flight-api-pass@localhost:27017/flight_db
   cloud.stream:
-    function.definition: planeEventProcessor;flightEventConsumer
+    function.definition: planeArrivedProcessor;flightArrivedConsumer
     kafka:
       bindings:
-        planeEventProcessor-in-0:
+        planeArrivedProcessor-in-0:
           consumer:
             enableDlq: true
-            dlqName: plane-events-dlq-v1
-        flightEventConsumer-in-0:
+            dlqName: plane-arrived-dlq-v1
+        flightArrivedConsumer-in-0:
           consumer:
             enableDlq: true
-            dlqName: flight-events-dlq-v1
-        planeEventProcessor-out-0:
+            dlqName: flight-arrived-dlq-v1
+        planeArrivedProcessor-out-0:
           producer.configuration:
             key.serializer: org.apache.kafka.common.serialization.StringSerializer
     bindings:
-      planeEventProcessor-in-0:
-        destination: plane-events-v1
+      planeArrivedProcessor-in-0:
+        destination: plane-arrived-v1
         group: flight-api
         consumer:
           retryable-exceptions:
             com.henriquels25.flightapi.plane.infra.stream.NoFlightFoundException: false
-      planeEventProcessor-out-0:
-        destination: flight-events-v1
-      flightEventConsumer-in-0:
-        destination: flight-events-v1
-        group: flight-api
-      flightArrived-out-0:
+      planeArrivedProcessor-out-0:
         destination: flight-arrived-v1
+      flightArrivedConsumer-in-0:
+        destination: flight-arrived-v1
+        group: flight-api
+      flightFinished-out-0:
+        destination: flight-finished-v1
 
 server.port: 8091

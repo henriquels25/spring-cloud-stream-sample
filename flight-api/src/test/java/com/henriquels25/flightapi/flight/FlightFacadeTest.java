@@ -90,7 +90,7 @@ class FlightFacadeTest {
         assertThat(savedFlight.getStatus()).isEqualTo(ARRIVED);
         assertThat(savedFlight.getId()).isEqualTo(FLIGHT_ID);
 
-        verify(flightNotifications).flightArrived(FLIGHT_ID);
+        verify(flightNotifications).flightFinished(FLIGHT_ID);
     }
 
     @Test

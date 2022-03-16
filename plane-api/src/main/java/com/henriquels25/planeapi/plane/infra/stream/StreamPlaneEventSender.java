@@ -6,12 +6,12 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class StreamPlaneEventSender implements PlaneEventSender {
+public class StreamPlaneEventSender implements PlaneArrivedSender {
 
     private final StreamBridge streamBridge;
 
     @Override
-    public void send(PlaneEvent planeEvent) {
-        streamBridge.send("planeEvent-out-0", planeEvent);
+    public void send(PlaneArrived planeEvent) {
+        streamBridge.send("planeArrived-out-0", planeEvent);
     }
 }

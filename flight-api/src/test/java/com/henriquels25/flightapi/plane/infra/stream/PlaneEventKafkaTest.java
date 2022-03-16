@@ -19,11 +19,10 @@ import java.util.Optional;
 import static com.henriquels25.flightapi.TestData.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
-import static org.springframework.kafka.support.KafkaHeaders.MESSAGE_KEY;
 
 @SpringBootTest
-@EmbeddedKafka(topics = {"plane-events-v1",
-        "flight-events-v1", "plane-events-dlq-v1", "flight-events-dlq-v1"},
+@EmbeddedKafka(topics = {"plane-arrived-v1",
+        "flight-arrived-v1", "plane-arrived-dlq-v1", "flight-arrived-dlq-v1"},
         bootstrapServersProperty = "spring.cloud.stream.kafka.binder.brokers")
 class PlaneEventKafkaTest {
 
@@ -45,14 +44,14 @@ class PlaneEventKafkaTest {
         when(flightOperations.findConfirmedFlightByPlaneId(PLANE_ID)).
                 thenReturn(Optional.of(FLIGHT_WITH_ID));
 
-        Consumer<String, String> consumer = kafkaTestUtils.createConsumer("flight-events-v1");
+        Consumer<String, String> consumer = kafkaTestUtils.createConsumer("flight-arrived-v1");
 
         String planeEvent = new JSONObject().put("planeId", PLANE_ID)
                 .put("currentAirport", CNH_CODE).toString();
 
-        kafkaTestUtils.sendMessage("plane-events-v1", planeEvent);
+        kafkaTestUtils.sendMessage("plane-arrived-v1", planeEvent);
 
-        ConsumerRecord<String, String> record = kafkaTestUtils.getNextRecord(consumer, "flight-events-v1");
+        ConsumerRecord<String, String> record = kafkaTestUtils.getNextRecord(consumer, "flight-arrived-v1");
 
         var jsonFlightEvent = new JSONObject(record.value());
         assertThat(jsonFlightEvent.get("currentAirport")).isEqualTo(CNH_CODE);
@@ -66,14 +65,14 @@ class PlaneEventKafkaTest {
         when(flightOperations.findConfirmedFlightByPlaneId(PLANE_ID)).
                 thenReturn(Optional.empty());
 
-        Consumer<String, String> consumer = kafkaTestUtils.createConsumer("plane-events-dlq-v1");
+        Consumer<String, String> consumer = kafkaTestUtils.createConsumer("plane-arrived-dlq-v1");
 
         String planeEvent = new JSONObject().put("planeId", PLANE_ID)
                 .put("currentAirport", CNH_CODE).toString();
 
-        kafkaTestUtils.sendMessage("plane-events-v1", planeEvent);
+        kafkaTestUtils.sendMessage("plane-arrived-v1", planeEvent);
 
-        ConsumerRecord<String, String> record = kafkaTestUtils.getNextRecord(consumer, "plane-events-dlq-v1");
+        ConsumerRecord<String, String> record = kafkaTestUtils.getNextRecord(consumer, "plane-arrived-dlq-v1");
 
         var jsonFlightEvent = new JSONObject(record.value());
         assertThat(jsonFlightEvent.get("currentAirport")).isEqualTo(CNH_CODE);
