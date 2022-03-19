@@ -1,4 +1,4 @@
-package com.henriquels25.flightapi.flight.infra.stream;
+package com.henriquels25.flightapi.flight.infra.stream.producer;
 
 import com.henriquels25.flightapi.messaging.utils.CloudStreamTest;
 import org.json.JSONException;

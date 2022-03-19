@@ -1,4 +1,4 @@
-package com.henriquels25.flightapi.flight.infra.stream;
+package com.henriquels25.flightapi.flight.infra.stream.consumer;
 
 import com.henriquels25.flightapi.airport.Airport;
 import com.henriquels25.flightapi.flight.FlightOperations;
@@ -21,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.mockito.Mockito.*;
 
-@SpringBootTest(classes = FlightEventTestConfig.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@SpringBootTest(classes = FlightEventConsumerTestConfig.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @EmbeddedKafka(topics = {"plane-arrived-v1",
         "flight-arrived-v1", "plane-arrived-dlq-v1", "flight-arrived-dlq-v1"},
         bootstrapServersProperty = "spring.cloud.stream.kafka.binder.brokers")
