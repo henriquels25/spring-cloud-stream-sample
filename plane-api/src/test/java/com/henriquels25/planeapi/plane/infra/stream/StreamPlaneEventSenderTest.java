@@ -14,7 +14,7 @@ import org.springframework.kafka.test.context.EmbeddedKafka;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest(classes = PlaneEventTestConfig.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @EmbeddedKafka(topics = {"plane-events-v1"},
         bootstrapServersProperty = "spring.cloud.stream.kafka.binder.brokers")
 class StreamPlaneEventSenderTest {
@@ -41,7 +41,7 @@ class StreamPlaneEventSenderTest {
 
         planeEventSender.send(TestData.PLANE_EVENT);
 
-        ConsumerRecord<String, String> record = kafkaTestUtils.getNextRecord(consumer, TOPIC_NAME);
+        ConsumerRecord<String, String> record = kafkaTestUtils.getLastRecord(consumer, TOPIC_NAME);
 
         var jsonEvent = new JSONObject(record.value());
         assertThat(jsonEvent.get("planeId")).isEqualTo(TestData.PLANE_ID);
