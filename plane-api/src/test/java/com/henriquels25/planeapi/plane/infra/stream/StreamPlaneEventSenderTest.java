@@ -14,7 +14,7 @@ import org.springframework.kafka.test.context.EmbeddedKafka;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
+@SpringBootTest(classes = PlaneEventTestConfig.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @EmbeddedKafka(topics = {"plane-events-v1"},
         bootstrapServersProperty = "spring.cloud.stream.kafka.binder.brokers")
 class StreamPlaneEventSenderTest {

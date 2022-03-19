@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.mockito.Mockito.*;
 
-@SpringBootTest
+@SpringBootTest(classes = FlightEventTestConfig.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @EmbeddedKafka(topics = {"plane-arrived-v1",
         "flight-arrived-v1", "plane-arrived-dlq-v1", "flight-arrived-dlq-v1"},
         bootstrapServersProperty = "spring.cloud.stream.kafka.binder.brokers")

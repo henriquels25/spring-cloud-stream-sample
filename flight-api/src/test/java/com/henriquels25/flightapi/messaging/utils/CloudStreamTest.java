@@ -1,5 +1,6 @@
 package com.henriquels25.flightapi.messaging.utils;
 
+import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.function.context.config.ContextFunctionCatalogAutoConfiguration;
 import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration;
