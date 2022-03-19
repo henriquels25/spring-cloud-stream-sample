@@ -1,5 +1,6 @@
 package com.henriquels25.flightapi.e2e;
 
+import com.henriquels25.flightapi.messaging.utils.EmbeddedKafkaWithTopics;
 import com.henriquels25.flightapi.messaging.utils.KafkaTestUtils;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -11,7 +12,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.kafka.test.EmbeddedKafkaBroker;
-import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.UUID;
@@ -23,9 +23,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
-@EmbeddedKafka(topics = {"plane-arrived-v1",
-        "flight-arrived-v1", "plane-arrived-dlq-v1", "flight-arrived-dlq-v1", "flight-finished-v1"},
-        bootstrapServersProperty = "spring.cloud.stream.kafka.binder.brokers")
+@EmbeddedKafkaWithTopics
 @AutoConfigureMockMvc
 public class FlightApiAcceptanceTest {
 

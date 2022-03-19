@@ -2,6 +2,7 @@ package com.henriquels25.flightapi.flight.infra.stream.consumer;
 
 import com.henriquels25.flightapi.airport.Airport;
 import com.henriquels25.flightapi.flight.FlightOperations;
+import com.henriquels25.flightapi.messaging.utils.EmbeddedKafkaWithTopics;
 import com.henriquels25.flightapi.messaging.utils.KafkaTestUtils;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -13,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.kafka.test.EmbeddedKafkaBroker;
-import org.springframework.kafka.test.context.EmbeddedKafka;
 
 import java.util.UUID;
 
@@ -22,10 +22,7 @@ import static org.awaitility.Awaitility.await;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-@EmbeddedKafka(topics = {"plane-arrived-v1",
-        "flight-arrived-v1", "plane-arrived-dlq-v1", "flight-arrived-dlq-v1"},
-        bootstrapServersProperty = "spring.cloud.stream.kafka.binder.brokers",
-        partitions = 1)
+@EmbeddedKafkaWithTopics
 class FlightArrivedConsumerTest {
 
     @Autowired
