@@ -18,7 +18,6 @@ import java.util.Optional;
 
 import static com.henriquels25.flightapi.TestData.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.awaitility.Awaitility.await;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
@@ -50,17 +49,13 @@ class PlaneEventProcessorTest {
 
         kafkaTestUtils.sendMessage("plane-arrived-v1", planeEvent);
 
-        await().untilAsserted(() -> {
-            ConsumerRecord<String, String> record = kafkaTestUtils.getLastRecord(consumer, "flight-arrived-v1");
+        ConsumerRecord<String, String> record = kafkaTestUtils.getLastRecord(consumer, "flight-arrived-v1");
 
-            var jsonFlightEvent = new JSONObject(record.value());
-            assertThat(jsonFlightEvent.get("currentAirport")).isEqualTo(CNH_CODE);
-            assertThat(jsonFlightEvent.get("flightId")).isEqualTo(FLIGHT_ID);
+        var jsonFlightEvent = new JSONObject(record.value());
+        assertThat(jsonFlightEvent.get("currentAirport")).isEqualTo(CNH_CODE);
+        assertThat(jsonFlightEvent.get("flightId")).isEqualTo(FLIGHT_ID);
 
-            assertThat(record.key()).isEqualTo(FLIGHT_ID);
-        });
-
-
+        assertThat(record.key()).isEqualTo(FLIGHT_ID);
     }
 
     @Test
@@ -75,17 +70,13 @@ class PlaneEventProcessorTest {
 
         kafkaTestUtils.sendMessage("plane-arrived-v1", planeEvent);
 
-        await().untilAsserted(() -> {
-            ConsumerRecord<String, String> record = kafkaTestUtils.getLastRecord(consumer, "plane-arrived-dlq-v1");
+        ConsumerRecord<String, String> record = kafkaTestUtils.getLastRecord(consumer, "plane-arrived-dlq-v1");
 
-            var jsonFlightEvent = new JSONObject(record.value());
-            assertThat(jsonFlightEvent.get("currentAirport")).isEqualTo(CNH_CODE);
-            assertThat(jsonFlightEvent.get("planeId")).isEqualTo(PLANE_ID);
-            String exceptionMessage = new String(record.headers().lastHeader("x-exception-message").value());
-            assertThat(exceptionMessage).contains("NoFlightFoundException");
-        });
-
-
+        var jsonFlightEvent = new JSONObject(record.value());
+        assertThat(jsonFlightEvent.get("currentAirport")).isEqualTo(CNH_CODE);
+        assertThat(jsonFlightEvent.get("planeId")).isEqualTo(PLANE_ID);
+        String exceptionMessage = new String(record.headers().lastHeader("x-exception-message").value());
+        assertThat(exceptionMessage).contains("NoFlightFoundException");
     }
 
 }
