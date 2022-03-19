@@ -1,99 +1,94 @@
 package com.henriquels25.flightapi.plane.infra.stream;
 
 import com.henriquels25.flightapi.flight.FlightOperations;
-import com.henriquels25.flightapi.messaging.utils.CloudStreamTest;
+import com.henriquels25.flightapi.messaging.utils.KafkaTestUtils;
+import org.apache.kafka.clients.consumer.Consumer;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.cloud.stream.binder.test.InputDestination;
-import org.springframework.cloud.stream.binder.test.OutputDestination;
-import org.springframework.context.annotation.Import;
-import org.springframework.messaging.Message;
-import org.springframework.messaging.support.GenericMessage;
+import org.springframework.kafka.test.EmbeddedKafkaBroker;
+import org.springframework.kafka.test.context.EmbeddedKafka;
 
 import java.util.Optional;
 
 import static com.henriquels25.flightapi.TestData.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.verify;
+import static org.awaitility.Awaitility.await;
 import static org.mockito.Mockito.when;
-import static org.springframework.kafka.support.KafkaHeaders.MESSAGE_KEY;
 
-@CloudStreamTest
-@Import(PlaneArrivedProcessor.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@EmbeddedKafka(topics = {"plane-arrived-v1",
+        "flight-arrived-v1", "plane-arrived-dlq-v1", "flight-arrived-dlq-v1"},
+        bootstrapServersProperty = "spring.cloud.stream.kafka.binder.brokers",
+        partitions = 1)
 class PlaneEventProcessorTest {
 
     @Autowired
-    private InputDestination source;
-    @Autowired
-    private OutputDestination target;
+    private EmbeddedKafkaBroker broker;
 
     @MockBean
     private FlightOperations flightOperations;
 
+    private KafkaTestUtils kafkaTestUtils;
+
+    @BeforeEach
+    void prepare() {
+        this.kafkaTestUtils = new KafkaTestUtils(broker);
+    }
+
     @Test
-    void shouldTransformPlaneEventToFlightEvent() throws JSONException {
+    void shouldTransformPlaneEventToFlightEvent() throws JSONException, InterruptedException {
         when(flightOperations.findConfirmedFlightByPlaneId(PLANE_ID)).
                 thenReturn(Optional.of(FLIGHT_WITH_ID));
 
+        Consumer<String, String> consumer = kafkaTestUtils.createConsumer("flight-arrived-v1");
+
         String planeEvent = new JSONObject().put("planeId", PLANE_ID)
                 .put("currentAirport", CNH_CODE).toString();
 
-        source.send(new GenericMessage<>(planeEvent.getBytes()),
-                "plane-arrived-v1");
+        kafkaTestUtils.sendMessage("plane-arrived-v1", planeEvent);
 
-        Message<byte[]> flightEvent = target.receive(0L,
-                "flight-arrived-v1");
+        await().untilAsserted(() -> {
+            ConsumerRecord<String, String> record = kafkaTestUtils.getLastRecord(consumer, "flight-arrived-v1");
 
-        var jsonFlightEvent = new JSONObject(new String(flightEvent.getPayload()));
-        assertThat(jsonFlightEvent.get("currentAirport")).isEqualTo(CNH_CODE);
-        assertThat(jsonFlightEvent.get("flightId")).isEqualTo(FLIGHT_ID);
+            var jsonFlightEvent = new JSONObject(record.value());
+            assertThat(jsonFlightEvent.get("currentAirport")).isEqualTo(CNH_CODE);
+            assertThat(jsonFlightEvent.get("flightId")).isEqualTo(FLIGHT_ID);
 
-        assertThat(flightEvent.getHeaders()).containsEntry(MESSAGE_KEY, FLIGHT_ID);
+            assertThat(record.key()).isEqualTo(FLIGHT_ID);
+        });
 
-        verify(flightOperations).findConfirmedFlightByPlaneId(PLANE_ID);
+
     }
 
     @Test
-    void shouldNotTransformPlaneEventToFlightEventWhenThereIsNoFlight() throws JSONException {
+    void shouldSendToDeadLetterWhenThereIsNoFlight() throws JSONException {
         when(flightOperations.findConfirmedFlightByPlaneId(PLANE_ID)).
                 thenReturn(Optional.empty());
 
-        String planeEvent = new JSONObject().put("planeId", PLANE_ID)
-                .put("currentAirport", CNH_CODE).toString();
-
-        source.send(new GenericMessage<>(planeEvent.getBytes()),
-                "plane-arrived-v1");
-
-        Message<byte[]> flightEvent = target.receive(0L,
-                "flight-arrived-v1");
-
-        assertThat(flightEvent).isNull();
-
-        verify(flightOperations).findConfirmedFlightByPlaneId(PLANE_ID);
-    }
-
-    @Test
-    void shouldTry3TimesToProcessPlaneEventWhenUnexpectedErrorHappens() throws JSONException {
-        when(flightOperations.findConfirmedFlightByPlaneId(PLANE_ID)).
-                thenThrow(RuntimeException.class);
+        Consumer<String, String> consumer = kafkaTestUtils.createConsumer("plane-arrived-dlq-v1");
 
         String planeEvent = new JSONObject().put("planeId", PLANE_ID)
                 .put("currentAirport", CNH_CODE).toString();
 
-        source.send(new GenericMessage<>(planeEvent.getBytes()),
-                "plane-arrived-v1");
+        kafkaTestUtils.sendMessage("plane-arrived-v1", planeEvent);
 
-        Message<byte[]> flightEvent = target.receive(0L,
-                "flight-arrived-v1");
+        await().untilAsserted(() -> {
+            ConsumerRecord<String, String> record = kafkaTestUtils.getLastRecord(consumer, "plane-arrived-dlq-v1");
 
-        assertThat(flightEvent).isNull();
+            var jsonFlightEvent = new JSONObject(record.value());
+            assertThat(jsonFlightEvent.get("currentAirport")).isEqualTo(CNH_CODE);
+            assertThat(jsonFlightEvent.get("planeId")).isEqualTo(PLANE_ID);
+            String exceptionMessage = new String(record.headers().lastHeader("x-exception-message").value());
+            assertThat(exceptionMessage).contains("NoFlightFoundException");
+        });
 
-        verify(flightOperations, Mockito.times(3))
-                .findConfirmedFlightByPlaneId(PLANE_ID);
+
     }
 
 }

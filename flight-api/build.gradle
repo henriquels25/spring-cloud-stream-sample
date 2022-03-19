@@ -32,6 +32,10 @@ dependencies {
     testImplementation 'org.springframework.kafka:spring-kafka-test'
     testImplementation 'org.awaitility:awaitility:3.0.0'
 
+    // https://mvnrepository.com/artifact/com.google.guava/guava
+    testImplementation 'com.google.guava:guava:31.1-jre'
+
+
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation("org.springframework.cloud:spring-cloud-stream") {
         artifact {
