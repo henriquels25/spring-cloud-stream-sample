@@ -1,4 +1,4 @@
-package com.henriquels25.flightapi.flight.infra.stream;
+package com.henriquels25.flightapi.flight.infra.stream.consumer;
 
 import com.henriquels25.flightapi.airport.Airport;
 import com.henriquels25.flightapi.flight.FlightOperations;

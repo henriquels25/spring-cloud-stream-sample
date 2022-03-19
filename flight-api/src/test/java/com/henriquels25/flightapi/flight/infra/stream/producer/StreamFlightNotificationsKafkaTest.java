@@ -1,6 +1,5 @@
-package com.henriquels25.flightapi.flight.infra.stream;
+package com.henriquels25.flightapi.flight.infra.stream.producer;
 
-import com.henriquels25.flightapi.flight.FlightOperations;
 import com.henriquels25.flightapi.messaging.utils.KafkaTestUtils;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -10,20 +9,16 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.kafka.test.EmbeddedKafkaBroker;
 import org.springframework.kafka.test.context.EmbeddedKafka;
 
 import static com.henriquels25.flightapi.TestData.FLIGHT_ID;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest(classes = FlightEventTestConfig.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@SpringBootTest(classes = FlightFinishedProducerTestConfig.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @EmbeddedKafka(topics = {"flight-finished-v1"},
         bootstrapServersProperty = "spring.cloud.stream.kafka.binder.brokers")
 class StreamFlightNotificationsKafkaTest {
-
-    @MockBean
-    private FlightOperations flightOperations;
 
     @Autowired
     private EmbeddedKafkaBroker broker;
