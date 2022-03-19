@@ -13,7 +13,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.kafka.test.EmbeddedKafkaBroker;
 import org.springframework.kafka.test.context.EmbeddedKafka;
-import org.springframework.test.annotation.DirtiesContext;
 
 import static com.henriquels25.flightapi.TestData.FLIGHT_ID;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -21,7 +20,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(classes = FlightEventTestConfig.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @EmbeddedKafka(topics = {"flight-finished-v1"},
         bootstrapServersProperty = "spring.cloud.stream.kafka.binder.brokers")
-@DirtiesContext
 class StreamFlightNotificationsKafkaTest {
 
     @MockBean
