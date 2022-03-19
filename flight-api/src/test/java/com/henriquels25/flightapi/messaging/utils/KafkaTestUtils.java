@@ -33,7 +33,7 @@ public class KafkaTestUtils {
     public Consumer<String, String> createConsumer(String topic) {
         Map<String, Object> consumerProps = org.springframework.kafka.test.utils.KafkaTestUtils
                 .consumerProps(UUID.randomUUID().toString(),
-                "true", broker);
+                        "true", broker);
         consumerProps.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
         ConsumerFactory<String, String> cf = new DefaultKafkaConsumerFactory<>(consumerProps,
                 new StringDeserializer(), new StringDeserializer());
@@ -42,8 +42,10 @@ public class KafkaTestUtils {
         return consumer;
     }
 
-    public ConsumerRecord<String, String> getNextRecord(Consumer<String, String> consumer, String topic) {
-        return org.springframework.kafka.test.utils.KafkaTestUtils.getRecords(consumer, 15000).records(topic).iterator().next();
+    public ConsumerRecord<String, String> getLastRecord(Consumer<String, String> consumer, String topic) {
+        return com.google.common.collect.Iterables.getLast(org.springframework.kafka.test.utils.KafkaTestUtils
+                .getRecords(consumer, 15000).records(topic));
+
     }
 
     public void sendMessage(String topic, String json) {
