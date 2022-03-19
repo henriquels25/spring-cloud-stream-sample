@@ -7,7 +7,7 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
-import static com.henriquels25.flightapi.flight.FlightStatus.ARRIVED;
+import static com.henriquels25.flightapi.flight.FlightStatus.FINISHED;
 
 
 @Builder(toBuilder = true)
@@ -23,7 +23,7 @@ public class Flight {
 
     public Flight arrivedIn(Airport airport) {
         if (airport.equals(destination)) {
-            return this.toBuilder().status(ARRIVED).build();
+            return this.toBuilder().status(FINISHED).build();
         }
         return this;
     }

@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.henriquels25.flightapi.TestData.*;
-import static com.henriquels25.flightapi.flight.FlightStatus.ARRIVED;
+import static com.henriquels25.flightapi.flight.FlightStatus.FINISHED;
 import static com.henriquels25.flightapi.flight.FlightStatus.CONFIRMED;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -87,7 +87,7 @@ class FlightFacadeTest {
         verify(flightRepository).save(flightArgumentCaptor.capture());
 
         Flight savedFlight = flightArgumentCaptor.getValue();
-        assertThat(savedFlight.getStatus()).isEqualTo(ARRIVED);
+        assertThat(savedFlight.getStatus()).isEqualTo(FINISHED);
         assertThat(savedFlight.getId()).isEqualTo(FLIGHT_ID);
 
         verify(flightNotifications).flightFinished(FLIGHT_ID);
