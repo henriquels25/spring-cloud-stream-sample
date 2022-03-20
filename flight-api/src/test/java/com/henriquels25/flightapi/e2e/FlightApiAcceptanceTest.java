@@ -57,9 +57,7 @@ class FlightApiAcceptanceTest {
                 .andReturn().getResponse().getHeader("location");
 
         String flightId = locationHeader.substring(locationHeader.lastIndexOf("/") + 1);
-
-        System.out.println(flightId);
-
+        
         var planeEvent = new JSONObject();
         planeEvent.put("planeId", PLANE_ID);
         planeEvent.put("currentAirport", CNH_CODE);
