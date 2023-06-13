@@ -12,4 +12,4 @@
 Spring Cloud Stream Sample
 ===============
 Application to demonstrate how to write Spring Boot Applications using [Spring Cloud Stream](https://spring.io/projects/spring-cloud-stream), with the
-functional programming model.
+functional programming model. 
