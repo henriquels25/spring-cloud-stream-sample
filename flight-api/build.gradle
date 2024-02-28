@@ -8,7 +8,7 @@ plugins {
 
 group = 'com.henriquels25.airlines.plane'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '17'
+sourceCompatibility = '21'
 
 repositories {
     mavenCentral()
