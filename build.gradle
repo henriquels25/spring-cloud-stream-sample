@@ -1,7 +1,7 @@
 plugins {
     id 'java'
     id 'jacoco'
-    id 'org.sonarqube' version '3.2.0'
+    id 'org.sonarqube' version '4.4.1.3373'
     id 'com.adarshr.test-logger' version '2.1.1'
 }
 
@@ -67,11 +67,11 @@ tasks.register("codeCoverageReport", JacocoReport) {
     reports {
         // xml is usually used to integrate code coverage with
         // other tools like SonarQube, Coveralls or Codecov
-        xml.enabled true
+        xml.required = true
 
         // HTML reports can be used to see code coverage
         // without any external tools
-        html.enabled true
+        html.required = true
     }
 }
 
