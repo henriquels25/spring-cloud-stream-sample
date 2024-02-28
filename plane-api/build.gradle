@@ -1,6 +1,6 @@
 plugins {
-    id 'org.springframework.boot' version '2.7.18'
-    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'org.springframework.boot' version '3.2.3'
+    id 'io.spring.dependency-management' version '1.1.4'
     id 'java'
     id "io.freefair.lombok" version "8.6"
     id 'jacoco'
@@ -15,7 +15,7 @@ repositories {
 }
 
 ext {
-    set('springCloudVersion', "2021.0.8")
+    set('springCloudVersion', "2023.0.0")
 }
 
 dependencies {
@@ -30,19 +30,12 @@ dependencies {
 
     testImplementation 'com.google.guava:guava:31.1-jre'
 
-    testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo'
+    testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo.spring30x:4.11.0'
     testImplementation 'org.springframework.kafka:spring-kafka-test'
     testImplementation 'org.awaitility:awaitility:3.0.0'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation("org.springframework.cloud:spring-cloud-stream") {
-        artifact {
-            name = "spring-cloud-stream"
-            extension = "jar"
-            type = "test-jar"
-            classifier = "test-binder"
-        }
-    }
+    testImplementation("org.springframework.cloud:spring-cloud-stream-test-binder")
 }
 
 dependencyManagement {

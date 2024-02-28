@@ -12,6 +12,7 @@ import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.test.EmbeddedKafkaBroker;
 
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -44,7 +45,7 @@ public class KafkaTestUtils {
 
     public ConsumerRecord<String, String> getLastRecord(Consumer<String, String> consumer, String topic) {
         return com.google.common.collect.Iterables.getLast(org.springframework.kafka.test.utils.KafkaTestUtils
-                .getRecords(consumer, 15000).records(topic));
+                .getRecords(consumer, Duration.ofSeconds(15)).records(topic));
 
     }
 
